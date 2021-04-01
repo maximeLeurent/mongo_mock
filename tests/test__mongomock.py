@@ -3152,6 +3152,12 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
             }
         }])
 
+        self.cmp.compare.aggregate([
+            {'$project': {
+                "values_index":{'$arrayElemAt': ["$values",{"$add":[1,1]}]}
+            }}
+        ])
+
     def test__aggregate_filter(self):
         self.cmp.do.drop()
         self.cmp.do.insert_many([
