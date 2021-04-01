@@ -3076,7 +3076,7 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
                 ]},
             }},
         ])
-        
+
     def test_aggregate_bug_607(self):
         """Regression test for bug https://github.com/mongomock/mongomock/issues/607."""
         self.cmp.do.drop()
@@ -3087,6 +3087,11 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
         self.cmp.compare.aggregate([
             {'$project': {
                 "values_index":{'$arrayElemAt': ["$values","$index"]}
+            }}
+        ])
+        self.cmp.compare.aggregate([
+            {'$project': {
+                "values_index":{'$arrayElemAt': ["$values",{"$add":[1,1]}]}
             }}
         ])
 
