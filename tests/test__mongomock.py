@@ -3077,6 +3077,25 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
             }},
         ])
 
+    def test_aggregate_bug_607(self):
+        """Regression test for bug https://github.com/mongomock/mongomock/issues/607."""
+        self.cmp.do.drop()
+        self.cmp.do.insert_one({
+            'index': 2,
+            'values': [0,1,5]
+        })
+        self.cmp.compare.aggregate([
+            {'$project': {
+                "values_index":{'$arrayElemAt': ["$values","$index"]}
+            }}
+        ])
+        self.cmp.compare.aggregate([
+            {'$project': {
+                "values_index":{'$arrayElemAt': ["$values",{"$add":[1,1]}]}
+            }}
+        ])
+
+
     def test__aggregate_cond_mongodb_to_bool(self):
         """Regression test for bug https://github.com/mongomock/mongomock/issues/650"""
         self.cmp.compare_ignore_order.aggregate([
@@ -3138,6 +3157,12 @@ class MongoClientAggregateTest(_CollectionComparisonTest):
                 'concat_item_not_array': {'$concatArrays': [[1, 2], '$a']}
             }
         }])
+
+        self.cmp.compare.aggregate([
+            {'$project': {
+                "values_index":{'$arrayElemAt': ["$values",{"$add":[1,1]}]}
+            }}
+        ])
 
     def test__aggregate_filter(self):
         self.cmp.do.drop()
